@@ -12,16 +12,10 @@ import {
 import useStyles from "./styles";
 import { PlaceDetails } from "../index";
 
-const List = () => {
+const List = ({ places }) => {
   const classes = useStyles();
   const [type, setType] = useState("Restaurant");
   const [rating, setRating] = useState("");
-
-  const places = [
-    { name: "cool Places" },
-    { name: "Best Pizza" },
-    { name: "Best Beer" },
-  ];
 
   return (
     <div className={classes.container}>
@@ -53,7 +47,6 @@ const List = () => {
           </Grid>
         ))}
       </Grid>
-      <h1>List</h1>
     </div>
   );
 };
