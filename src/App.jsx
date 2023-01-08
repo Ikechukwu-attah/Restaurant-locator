@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Header, Map, List, PlaceDetails } from "./components";
 import { CssBaseline, Grid } from "@material-ui/core";
+import { getPlacedData } from "./api";
+import { Data } from "@react-google-maps/api";
 const App = () => {
+  const [places, setPlaces] = useState([]);
+
+  const [bound, setBound] = useState({});
+  const [coordinates, setCoordinates] = useState(null);
+  useEffect(() => {
+    getPlacedData().then((data) => setPlaces(data));
+  }, [coordinates, bound]);
   return (
     <>
       <CssBaseline />
@@ -11,7 +20,11 @@ const App = () => {
           <List />
         </Grid>
         <Grid item xs={12} md={8}>
-          <Map />
+          <Map
+            setBound={setBound}
+            setCoordinate={setCoordinates}
+            coordinates={coordinates}
+          />
         </Grid>
       </Grid>
     </>
