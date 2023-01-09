@@ -5,10 +5,13 @@ import { getPlacedData } from "./api";
 import { Data } from "@react-google-maps/api";
 const App = () => {
   const [places, setPlaces] = useState([]);
-
+  const [filteredPlace, setFilteredPlace] = useState([]);
+  const [type, setType] = useState("Restaurant");
+  const [rating, setRating] = useState("");
   const [bound, setBound] = useState({});
-  const [coordinates, setCoordinates] = useState(null);
-  console.log(coordinates);
+  const [coordinates, setCoordinates] = useState({});
+  const [childClicked, setChildClicked] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Getting users current location
   useEffect(() => {
@@ -19,22 +22,41 @@ const App = () => {
     );
   }, []);
   // **********************
+
   useEffect(() => {
-    getPlacedData(bound.sw, bound.ne).then((data) => setPlaces(data));
-  }, [coordinates, bound]);
+    const filteredPlace = places?.filter((place) => place.rating > rating);
+    setFilteredPlace(filteredPlace);
+  }, [rating]);
+  useEffect(() => {
+    setIsLoading(true);
+    getPlacedData(type, bound.sw, bound.ne).then((data) => {
+      setPlaces(data);
+      setIsLoading(false);
+    });
+  }, [type, coordinates, bound]);
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header setCoordinates={setCoordinates} />
       <Grid container spacing={3} style={{ width: "100%" }}>
         <Grid item xs={12} md={4}>
-          <List places={places} />
+          <List
+            places={filteredPlace ? filteredPlace : places}
+            childClicked={childClicked}
+            isLoading={isLoading}
+            type={type}
+            setType={setType}
+            rating={rating}
+            setRating={setRating}
+          />
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
             setBound={setBound}
             setCoordinates={setCoordinates}
             coordinates={coordinates}
+            places={filteredPlace ? filteredPlace : places}
+            setChildClicked={setChildClicked}
           />
         </Grid>
       </Grid>
